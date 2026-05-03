@@ -1,0 +1,11 @@
+[package]
+name = "win-desktop-utils-demo"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.82"
+license = "MIT OR Apache-2.0"
+description = "Tiny companion demo app for win-desktop-utils"
+repository = "https://github.com/funwithcthulhu/win-desktop-utils-demo"
+
+[dependencies]
+win-desktop-utils = "0.5"
