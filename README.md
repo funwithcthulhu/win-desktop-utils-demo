@@ -27,8 +27,11 @@ cargo run -- --reveal-data-dir
 cargo run -- --open-docs
 ```
 
-The first command does not open UI. The `--open-*` and `--reveal-*` commands use
-the Windows shell and may open a browser or Explorer window.
+The first command does not open UI. It prints the detected platform, the demo
+app-data path, and a compact table of supported actions with side-effect labels.
+The `--open-*` and `--reveal-*` commands use the Windows shell and may open a
+browser or Explorer window. `--create-docs-shortcut` writes or overwrites the
+demo docs shortcut in app data.
 
 ## Why This Exists
 

@@ -7,6 +7,40 @@ const DOCS_URL: &str = "https://docs.rs/win-desktop-utils";
 const REPO_URL: &str = "https://github.com/funwithcthulhu/win-desktop-utils";
 const SHORTCUT_NAME: &str = "win-desktop-utils docs.url";
 
+struct DemoAction {
+    flag: &'static str,
+    description: &'static str,
+    side_effects: &'static str,
+}
+
+const DEMO_ACTIONS: &[DemoAction] = &[
+    DemoAction {
+        flag: "--elevation",
+        description: "Print whether this process is elevated",
+        side_effects: "none",
+    },
+    DemoAction {
+        flag: "--open-docs",
+        description: "Open the docs.rs page in the default browser",
+        side_effects: "opens the default browser or registered URL handler",
+    },
+    DemoAction {
+        flag: "--open-repo",
+        description: "Open the GitHub repository",
+        side_effects: "opens the default browser or registered URL handler",
+    },
+    DemoAction {
+        flag: "--reveal-data-dir",
+        description: "Reveal the demo app-data directory in Explorer",
+        side_effects: "opens Explorer with the app-data directory selected",
+    },
+    DemoAction {
+        flag: "--create-docs-shortcut",
+        description: "Create a .url shortcut to the docs page",
+        side_effects: "writes or overwrites the docs .url file in app data",
+    },
+];
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().skip(1).collect();
 
@@ -25,7 +59,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     if args.is_empty() {
         println!("Prepared demo desktop state.");
-        println!("Local app data: {}", local_data_dir.display());
+        println!();
+        print_capabilities(&local_data_dir);
         println!();
         print_help(Some(&local_data_dir));
         return Ok(());
@@ -77,16 +112,49 @@ fn print_help(local_data_dir: Option<&Path>) {
     println!("  cargo run -- [option ...]");
     println!();
     println!("Options:");
-    println!("  --elevation              Print whether this process is elevated");
-    println!("  --open-docs              Open the docs.rs page in the default browser");
-    println!("  --open-repo              Open the GitHub repository");
-    println!("  --reveal-data-dir        Reveal the demo app-data directory in Explorer");
-    println!("  --create-docs-shortcut   Create a .url shortcut to the docs page");
+    for action in DEMO_ACTIONS {
+        println!("  {:<24} {}", action.flag, action.description);
+    }
     println!("  -h, --help               Show this help");
 
     if let Some(local_data_dir) = local_data_dir {
         println!();
         println!("Current app-data directory:");
         println!("  {}", local_data_dir.display());
+    }
+}
+
+fn print_capabilities(local_data_dir: &Path) {
+    println!("Capabilities:");
+    println!(
+        "  Detected platform: {} {} ({})",
+        env::consts::OS,
+        env::consts::ARCH,
+        env::consts::FAMILY
+    );
+    println!("  App-data path: {}", local_data_dir.display());
+    println!();
+    println!("Demo actions:");
+    println!(
+        "  {:<24} supported: {:<18} side effects: creates local app-data if missing; holds a single-instance guard",
+        "startup flow",
+        support_label()
+    );
+
+    for action in DEMO_ACTIONS {
+        println!(
+            "  {:<24} supported: {:<18} side effects: {}",
+            action.flag,
+            support_label(),
+            action.side_effects
+        );
+    }
+}
+
+fn support_label() -> &'static str {
+    if cfg!(windows) {
+        "yes"
+    } else {
+        "no (Windows-only)"
     }
 }
