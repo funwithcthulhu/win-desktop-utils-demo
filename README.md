@@ -31,7 +31,11 @@ The first command does not open UI. It prints the detected platform, the demo
 app-data path, and a compact table of supported actions with side-effect labels.
 The `--open-*` and `--reveal-*` commands use the Windows shell and may open a
 browser or Explorer window. `--create-docs-shortcut` writes or overwrites the
-demo docs shortcut in app data.
+demo docs shortcut in app data. Action runs print a side-effect line before
+calling shell, shortcut, elevation-check, or app-data helpers.
+
+This demo does not expose Recycle Bin helpers or elevation-request helpers. The
+`--elevation` flag only checks whether the current process is elevated.
 
 ## Why This Exists
 
